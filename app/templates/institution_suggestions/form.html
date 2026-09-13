@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Sugerir instituição — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div>
+            <div class="breadcrumb"><a href="/">Início</a> / Sugerir instituição</div>
+            <h1>Sugerir uma instituição</h1>
+            <p>Conhece um ponto de doação ou instituição que ainda não está na Rede Solidária? Conte pra gente.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="form-card">
+            <div class="admin-notice" style="margin-bottom: 1.5rem;">
+                Sua sugestão não é publicada automaticamente. Nossa equipe revisa cada
+                instituição sugerida antes de publicá-la no site, para garantir que as
+                informações são confiáveis.
+            </div>
+
+            {% if enviado %}
+            <div class="form-errors" style="background-color: var(--color-brand-light); border-color: var(--color-brand); color: var(--color-brand-dark);">
+                <p>Sugestão enviada com sucesso!</p>
+                <p style="font-weight: 400; margin-top: .4rem;">Obrigado por ajudar a Rede Solidária a crescer. Nossa equipe vai avaliar as informações em breve.</p>
+            </div>
+            {% endif %}
+
+            {% if errors %}
+            <div class="form-errors">
+                <p>Corrija os itens abaixo antes de continuar:</p>
+                <ul>
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post" action="/instituicoes/sugerir">
+                <h3 style="margin-bottom: 1rem;">Sobre a instituição</h3>
+                <div class="form-grid">
+                    <div class="field field--full">
+                        <label for="name">Nome da instituição *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="description">Descrição</label>
+                        <textarea id="description" name="description" placeholder="O que essa instituição faz? Que tipo de ajuda ela oferece?"></textarea>
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="address">Endereço *</label>
+                        <input type="text" id="address" name="address" required placeholder="Rua, número, bairro">
+                    </div>
+
+                    <div class="field">
+                        <label for="city">Cidade *</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="state">Estado (UF) *</label>
+                        <input type="text" id="state" name="state" required maxlength="2" placeholder="SP">
+                    </div>
+
+                    <div class="field">
+                        <label for="zip_code">CEP</label>
+                        <input type="text" id="zip_code" name="zip_code" placeholder="00000-000">
+                    </div>
+
+                    <div class="field">
+                        <label for="phone">Telefone</label>
+                        <input type="tel" id="phone" name="phone" placeholder="(11) 99999-0000">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                </div>
+
+                <h3 style="margin: 1.5rem 0 1rem;">Sobre você</h3>
+                <p style="margin-bottom: 1rem; font-size: .9rem;">Para o caso de precisarmos confirmar alguma informação.</p>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="suggested_by_name">Seu nome *</label>
+                        <input type="text" id="suggested_by_name" name="suggested_by_name" required>
+                    </div>
+                    <div class="field">
+                        <label for="suggested_by_contact">Seu contato *</label>
+                        <input type="text" id="suggested_by_contact" name="suggested_by_contact" required placeholder="Telefone ou e-mail">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary">Enviar sugestão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

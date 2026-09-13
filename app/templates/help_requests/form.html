@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Encontrar ajuda — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div>
+            <div class="breadcrumb"><a href="/">Início</a> / Encontrar ajuda</div>
+            <h1>Solicitar ajuda</h1>
+            <p>Preencha o formulário abaixo. Uma instituição parceira vai avaliar sua situação com cuidado.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="form-card">
+            <div class="admin-notice" style="margin-bottom: 1.5rem;">
+                Estas informações são usadas apenas para organizar os pedidos e direcioná-los a
+                instituições. Nenhuma decisão sobre sua situação é tomada automaticamente pelo
+                sistema — uma pessoa responsável vai analisar seu pedido.
+            </div>
+
+            {% if enviado %}
+            <div class="form-errors" style="background-color: var(--color-brand-light); border-color: var(--color-brand); color: var(--color-brand-dark);">
+                <p>Solicitação enviada com sucesso!</p>
+                <p style="font-weight: 400; margin-top: .4rem;">Uma instituição vai entrar em contato pelo meio que você informou. Obrigado por confiar na Rede Solidária.</p>
+            </div>
+            {% endif %}
+
+            {% if errors %}
+            <div class="form-errors">
+                <p>Corrija os itens abaixo antes de continuar:</p>
+                <ul>
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post" action="/ajuda/solicitar">
+                <div class="form-grid">
+                    <div class="field field--full">
+                        <label for="name">Seu nome *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="age">Idade</label>
+                        <input type="number" id="age" name="age" min="0" max="130">
+                    </div>
+
+                    <div class="field">
+                        <label for="household_size">Pessoas na residência</label>
+                        <input type="number" id="household_size" name="household_size" min="1">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="family_income">Renda familiar mensal (R$)</label>
+                        <input type="text" id="family_income" name="family_income" placeholder="Ex: 1200.00">
+                        <span class="field__hint">Opcional. Ajuda a instituição a entender melhor sua situação.</span>
+                    </div>
+
+                    <div class="field">
+                        <label for="city">Cidade *</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="neighborhood">Bairro</label>
+                        <input type="text" id="neighborhood" name="neighborhood">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="help_type_id">Tipo de ajuda necessária *</label>
+                        <select id="help_type_id" name="help_type_id" required
+                            style="font-family: var(--font-body); font-size: .98rem; padding: .7rem .9rem; border: 1px solid var(--color-line); border-radius: var(--radius-sm); background-color: var(--color-paper); color: var(--color-ink);">
+                            {% for dt in donation_types %}
+                            <option value="{{ dt.id }}">{{ dt.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="description">Conte um pouco sobre sua situação *</label>
+                        <textarea id="description" name="description" required placeholder="Descreva brevemente sua situação e o que você precisa..."></textarea>
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="contact">Forma de contato *</label>
+                        <input type="text" id="contact" name="contact" required placeholder="Telefone, WhatsApp ou e-mail">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary">Enviar solicitação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

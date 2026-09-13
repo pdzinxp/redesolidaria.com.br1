@@ -1,0 +1,53 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_page_title %}Feedbacks{% endblock %}
+{% block admin_title %}Feedbacks dos usuários{% endblock %}
+
+{% block admin_content %}
+<div class="admin-stat-cards" style="grid-template-columns: repeat(2, minmax(200px, 1fr)); margin-bottom: var(--space-lg);">
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ average }}</div>
+        <div class="admin-stat-card__label">Nota média (de 5)</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ feedbacks|length }}</div>
+        <div class="admin-stat-card__label">Avaliações recebidas</div>
+    </div>
+</div>
+
+{% if feedbacks %}
+<div class="admin-table-wrapper">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Nota</th>
+                <th>Comentário</th>
+                <th>De</th>
+                <th>Data</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in feedbacks %}
+            <tr>
+                <td style="color: var(--color-accent); letter-spacing: 1px; white-space: nowrap;">
+                    {% for i in range(5) %}{% if i < f.rating %}★{% else %}<span style="color: var(--color-line);">★</span>{% endif %}{% endfor %}
+                </td>
+                <td style="max-width: 340px;">{{ f.comment or "—" }}</td>
+                <td>{{ f.reviewer_name or "Anônimo" }}</td>
+                <td>{{ f.created_at.strftime("%d/%m/%Y") }}</td>
+                <td style="text-align:right;">
+                    <form method="post" action="/admin/feedbacks/{{ f.id }}/excluir" onsubmit="return confirm('Excluir esta avaliação?');">
+                        <button type="submit" class="btn btn--danger btn--tiny" style="width:auto;">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-hint">
+    <strong style="display:block; color: var(--color-brand-dark); font-family: var(--font-display); font-size: 1.2rem;">Nenhuma avaliação recebida ainda</strong>
+</div>
+{% endif %}
+{% endblock %}

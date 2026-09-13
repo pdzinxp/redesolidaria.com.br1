@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ institution.name }} — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div>
+            <div class="breadcrumb"><a href="/">Início</a> / <a href="/instituicoes">Instituições</a> / {{ institution.name }}</div>
+            <h1>{{ institution.name }}</h1>
+            <p>{{ institution.city }}/{{ institution.state }} — {{ institution.address }}</p>
+        </div>
+        <a href="/instituicoes" class="btn btn--secondary">← Voltar para instituições</a>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container institution-detail">
+        <div>
+            <div class="institution-detail__photo">
+                {% if institution.main_image %}
+                <img src="/{{ institution.main_image.file_path }}" alt="Foto de {{ institution.name }}">
+                {% endif %}
+            </div>
+
+            {% if institution.images|length > 1 %}
+            <div class="detail-gallery">
+                {% for image in institution.images %}
+                {% if not image.is_main %}
+                <img src="/{{ image.file_path }}" alt="Foto de {{ institution.name }}">
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <h3 style="margin-top: 2rem;">Sobre</h3>
+            <p style="margin-top: .6rem;">{{ institution.description or "Esta instituição ainda não adicionou uma descrição." }}</p>
+
+            <h3 style="margin-top: 2rem;">Tipos de doação aceitos</h3>
+            <div class="donation-types" style="margin-top: .8rem;">
+                {% if institution.donation_types %}
+                    {% for dt in institution.donation_types %}
+                    <div class="donation-chip"><span>{{ dt.name }}</span></div>
+                    {% endfor %}
+                {% else %}
+                <p>Nenhum tipo de doação informado ainda.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <aside class="sidebar-card">
+            {% if institution.is_active %}
+            <span class="badge badge--active">Ativa</span>
+            {% else %}
+            <span class="badge badge--inactive">Inativa</span>
+            {% endif %}
+
+            <div class="info-list">
+                <div class="info-list__item">
+                    <span>Endereço</span>
+                    <span>{{ institution.address }}, {{ institution.city }}/{{ institution.state }}{% if institution.zip_code %} — {{ institution.zip_code }}{% endif %}</span>
+                </div>
+                <div class="info-list__item">
+                    <span>Telefone</span>
+                    <span>{{ institution.phone or "Não informado" }}</span>
+                </div>
+                <div class="info-list__item">
+                    <span>E-mail</span>
+                    <span>{{ institution.email or "Não informado" }}</span>
+                </div>
+                <div class="info-list__item">
+                    <span>Horário de funcionamento</span>
+                    <span>{{ institution.opening_hours or "Não informado" }}</span>
+                </div>
+                <div class="info-list__item">
+                    <span>Coordenadas</span>
+                    <span>{{ institution.latitude }}, {{ institution.longitude }}</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

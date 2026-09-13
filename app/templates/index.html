@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+    <div class="container">
+        <div class="hero__content">
+            <h1>Quem precisa de ajuda e quem quer doar, <em>mais perto um do outro.</em></h1>
+            <p>
+                A Rede Solidária reúne em um só lugar instituições, pontos de coleta
+                e pessoas que precisam de apoio — para que doar e pedir ajuda seja
+                simples, transparente e próximo de onde você está.
+            </p>
+            <div class="hero__actions">
+                <a href="/ajuda/solicitar" class="btn btn--primary">Encontrar ajuda</a>
+                <a href="/#pontos-de-doacao" class="btn btn--secondary">Quero doar</a>
+            </div>
+            <p class="hero__note">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M8.5 12.5l2.3 2.3L16 9.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Projeto em desenvolvimento — os dados abaixo crescem conforme instituições reais são cadastradas.
+            </p>
+        </div>
+
+        <div class="hero__visual" aria-hidden="true">
+            <svg viewBox="0 0 420 380" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="#1e4d42" stroke-width="1.4" opacity="0.5">
+                    <line x1="70" y1="80" x2="210" y2="180"/>
+                    <line x1="340" y1="60" x2="210" y2="180"/>
+                    <line x1="60" y1="260" x2="210" y2="180"/>
+                    <line x1="330" y1="290" x2="210" y2="180"/>
+                    <line x1="210" y1="180" x2="210" y2="320"/>
+                    <line x1="70" y1="80" x2="60" y2="260"/>
+                    <line x1="340" y1="60" x2="330" y2="290"/>
+                </g>
+                <circle class="network-node" cx="70" cy="80" r="14" fill="#de9f3d"/>
+                <circle class="network-node" cx="340" cy="60" r="10" fill="#1e4d42" style="animation-delay:.4s"/>
+                <circle class="network-node" cx="60" cy="260" r="11" fill="#1e4d42" style="animation-delay:.8s"/>
+                <circle class="network-node" cx="330" cy="290" r="15" fill="#de9f3d" style="animation-delay:1.2s"/>
+                <circle class="network-node" cx="210" cy="320" r="9" fill="#1e4d42" style="animation-delay:1.6s"/>
+                <circle cx="210" cy="180" r="20" fill="#1e4d42"/>
+                <circle cx="210" cy="180" r="20" fill="none" stroke="#de9f3d" stroke-width="2"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- ============ COMO FUNCIONA ============ -->
+<section class="section" id="como-funciona">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Como funciona</span>
+            <h2>Três passos para conectar quem doa e quem recebe</h2>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step__index">1</div>
+                <h3>Escolha seu caminho</h3>
+                <p>Diga se você precisa de ajuda ou se quer doar — cada caminho leva a um formulário simples e direto.</p>
+            </div>
+            <div class="step">
+                <div class="step__index">2</div>
+                <h3>Encontre um ponto próximo</h3>
+                <p>Veja no mapa as instituições e pontos de coleta mais próximos, com endereço, horário e o que cada um aceita.</p>
+            </div>
+            <div class="step">
+                <div class="step__index">3</div>
+                <h3>Ajuda de verdade acontece</h3>
+                <p>O contato acontece diretamente com a instituição responsável, que avalia e conduz cada caso com cuidado.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ TIPOS DE AJUDA ============ -->
+<section class="section section--alt" id="tipos-de-ajuda">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">O que circula na rede</span>
+            <h2>Tipos de ajuda e doação</h2>
+            <p>Cada instituição cadastrada informa quais destes itens ela recebe e distribui.</p>
+        </div>
+
+        <div class="donation-types">
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3v6a3 3 0 003 3v9M6 3v9M9 3v6M12 3v9a3 3 0 01-3 3M18 3c-2 1-3 3-3 6s1 4 3 6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span>Alimentos</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 4l4 2 4-2 3 3-2 2v11H5V9L3 7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                </span>
+                <span>Roupas</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 18c0-3 2-4 4-4h1l3-6 2 1-2 5h4c2 0 4 1 4 4v1H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                </span>
+                <span>Calçados</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="16" height="14" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                <span>Material escolar</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4a3 3 0 00-3 3v1a3 3 0 006 0V7a3 3 0 00-3-3z" stroke="currentColor" stroke-width="1.6"/><path d="M6 20c0-4 2.5-6 6-6s6 2 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                <span>Produtos de higiene</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 18v-6a2 2 0 012-2h12a2 2 0 012 2v6M4 18h16M6 12V8h5v4M6 18v2M18 18v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span>Móveis</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="7" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 11h18M8 7V5h8v2" stroke="currentColor" stroke-width="1.6"/></svg>
+                </span>
+                <span>Cobertores</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="15" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="9" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M9 12V6a2 2 0 114 0M15 12v6a2 2 0 11-4 0" stroke="currentColor" stroke-width="1.6"/></svg>
+                </span>
+                <span>Brinquedos</span>
+            </div>
+            <div class="donation-chip">
+                <span class="donation-chip__icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                <span>Outros</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ PONTOS DE DOAÇÃO ============ -->
+<section class="section" id="pontos-de-doacao">
+    <div class="container">
+        <div class="section-header section-header--with-action">
+            <div>
+                <span class="eyebrow">Perto de você</span>
+                <h2>Pontos de doação em destaque</h2>
+                <p>Instituições cadastradas na plataforma, prontas para receber ou distribuir doações.</p>
+            </div>
+            <a href="/instituicoes" class="btn btn--secondary">Ver todas</a>
+        </div>
+
+        {% if featured_institutions %}
+        <div class="institutions-scroller">
+            {% for institution in featured_institutions %}
+            <article class="institution-card">
+                <div class="institution-card__photo">
+                    {% if institution.main_image %}
+                    <img src="/{{ institution.main_image.file_path }}" alt="Foto de {{ institution.name }}">
+                    {% endif %}
+                </div>
+                <div class="institution-card__body">
+                    <span class="institution-card__city">{{ institution.city }}</span>
+                    <h3>{{ institution.name }}</h3>
+                    <p>{{ institution.description }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="institutions-empty">
+            <strong>Ainda não há instituições cadastradas</strong>
+            Assim que instituições forem cadastradas pelo painel administrativo, elas aparecerão aqui automaticamente — com foto, endereço e tipos de doação aceitos.
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ============ ESTATÍSTICAS ============ -->
+<section class="section stats-band">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow" style="color: var(--color-accent);">Em números</span>
+            <h2>A rede em crescimento</h2>
+            <p>Estes números são atualizados automaticamente a partir do banco de dados, conforme a plataforma recebe cadastros reais.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat">
+                <div class="stat__number">{{ stats.institutions }}</div>
+                <div class="stat__label">Instituições cadastradas</div>
+            </div>
+            <div class="stat">
+                <div class="stat__number">{{ stats.donation_points }}</div>
+                <div class="stat__label">Pontos de doação ativos</div>
+            </div>
+            <div class="stat">
+                <div class="stat__number">{{ site_settings.people_helped }}</div>
+                <div class="stat__label">Pessoas ajudadas</div>
+            </div>
+            <div class="stat">
+                <div class="stat__number">{{ stats.cities }}</div>
+                <div class="stat__label">Cidades atendidas</div>
+            </div>
+        </div>
+        <p class="stats-band__note">Plataforma em fase inicial de cadastro — os números crescem à medida que instituições se juntam à rede.</p>
+    </div>
+</section>
+
+<!-- ============ IMPACTO / PROPOSTA ============ -->
+<section class="section" id="impacto">
+    <div class="container impact">
+        <div class="impact__figures">
+            <div class="impact__figure">
+                <strong>1 em cada 3</strong>
+                <span>brasileiros já viveu insegurança alimentar em algum grau, segundo pesquisas nacionais recentes.</span>
+            </div>
+            <div class="impact__figure">
+                <strong>Milhares</strong>
+                <span>de instituições fazem esse trabalho todos os dias, muitas vezes sem visibilidade suficiente.</span>
+            </div>
+        </div>
+
+        <div class="impact__body">
+            <span class="eyebrow">Por que este projeto existe</span>
+            <h2>Desigualdade social não falta de solidariedade — falta conexão</h2>
+            <p>
+                Existem pessoas com um casaco a mais no armário e pessoas passando frio na mesma cidade.
+                Existem instituições com prateleiras vazias e pessoas com comida sobrando que não sabem
+                para onde levar. O problema, muitas vezes, não é a ausência de vontade de ajudar — é a
+                falta de um caminho simples entre quem tem e quem precisa.
+            </p>
+            <p>
+                A Rede Solidária nasce como um projeto escolar com um objetivo real: tornar essa conexão
+                visível e acessível, usando um mapa colaborativo para aproximar doadores, instituições e
+                pessoas em situação de vulnerabilidade.
+            </p>
+            <div class="impact__disclaimer">
+                A plataforma organiza informações para facilitar o contato — mas nunca decide sozinha quem
+                "merece" receber ajuda. Toda avaliação de uma situação individual é feita por uma instituição
+                ou profissional responsável, nunca automaticamente pelo sistema.
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_page_title %}Sugestões de instituição{% endblock %}
+{% block admin_title %}Sugestões de instituição{% endblock %}
+
+{% block admin_content %}
+<div class="admin-notice">
+    Estas são instituições sugeridas por visitantes do site. Nenhuma delas fica visível
+    publicamente até que você aprove e complete o cadastro (com latitude/longitude, fotos
+    e tipos de doação).
+</div>
+
+<div class="admin-page-header">
+    <div style="display: flex; gap: .5rem;">
+        <a href="/admin/sugestoes?status=pendente" class="btn {% if status_filter == 'pendente' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Pendentes</a>
+        <a href="/admin/sugestoes?status=aprovada" class="btn {% if status_filter == 'aprovada' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Aprovadas</a>
+        <a href="/admin/sugestoes?status=rejeitada" class="btn {% if status_filter == 'rejeitada' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Rejeitadas</a>
+    </div>
+</div>
+
+{% if suggestions %}
+<div class="admin-table-wrapper">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Instituição sugerida</th>
+                <th>Cidade</th>
+                <th>Sugerido por</th>
+                <th>Recebida em</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in suggestions %}
+            <tr>
+                <td>
+                    <strong>{{ s.name }}</strong><br>
+                    <span style="font-size:.82rem; color: var(--color-ink-soft);">{{ s.address }}</span>
+                </td>
+                <td>{{ s.city }}/{{ s.state }}</td>
+                <td>{{ s.suggested_by_name }}<br><span style="font-size:.82rem; color: var(--color-ink-soft);">{{ s.suggested_by_contact }}</span></td>
+                <td>{{ s.created_at.strftime("%d/%m/%Y") }}</td>
+                <td style="text-align:right; white-space: nowrap;">
+                    {% if s.status == 'pendente' %}
+                    <form method="post" action="/admin/sugestoes/{{ s.id }}/aprovar" style="display:inline;">
+                        <button type="submit" class="btn btn--primary btn--tiny" style="width:auto;">Aprovar</button>
+                    </form>
+                    <form method="post" action="/admin/sugestoes/{{ s.id }}/rejeitar" style="display:inline;" onsubmit="return confirm('Rejeitar esta sugestão?');">
+                        <button type="submit" class="btn btn--danger btn--tiny" style="width:auto;">Rejeitar</button>
+                    </form>
+                    {% elif s.status == 'aprovada' %}
+                    <span class="badge badge--active">Aprovada</span>
+                    {% if s.linked_institution_id %}
+                    <a href="/admin/instituicoes/{{ s.linked_institution_id }}/editar" class="btn btn--secondary btn--tiny" style="width:auto;">Ver instituição</a>
+                    {% endif %}
+                    {% else %}
+                    <span class="badge badge--inactive">Rejeitada</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-hint">
+    <strong style="display:block; color: var(--color-brand-dark); font-family: var(--font-display); font-size: 1.2rem;">Nenhuma sugestão {{ status_filter }} no momento</strong>
+</div>
+{% endif %}
+{% endblock %}

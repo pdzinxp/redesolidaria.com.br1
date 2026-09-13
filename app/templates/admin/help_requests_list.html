@@ -1,0 +1,53 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_page_title %}Solicitações de ajuda{% endblock %}
+{% block admin_title %}Solicitações de ajuda{% endblock %}
+
+{% block admin_content %}
+<div class="admin-notice">
+    A ordenação abaixo é apenas uma ferramenta de organização. Ela NÃO representa uma
+    avaliação oficial de quem "merece" receber ajuda — cada caso deve ser analisado
+    individualmente por uma pessoa responsável.
+</div>
+
+<div class="admin-page-header">
+    <p>{{ help_requests|length }} solicitação(ões) recebida(s).</p>
+    <div style="display: flex; gap: .5rem;">
+        <a href="/admin/solicitacoes?ordenar=recentes" class="btn {% if ordenar == 'recentes' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Mais recentes</a>
+        <a href="/admin/solicitacoes?ordenar=organizacao" class="btn {% if ordenar == 'organizacao' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Por organização</a>
+    </div>
+</div>
+
+{% if help_requests %}
+<div class="admin-table-wrapper">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cidade / Bairro</th>
+                <th>Tipo de ajuda</th>
+                <th>Contato</th>
+                <th>Situação descrita</th>
+                <th>Recebida em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hr in help_requests %}
+            <tr>
+                <td>{{ hr.name }}{% if hr.age %} ({{ hr.age }} anos){% endif %}</td>
+                <td>{{ hr.city }}{% if hr.neighborhood %} — {{ hr.neighborhood }}{% endif %}</td>
+                <td>{{ hr.help_type.name }}</td>
+                <td>{{ hr.contact }}</td>
+                <td style="max-width: 320px;">{{ hr.description }}</td>
+                <td>{{ hr.created_at.strftime("%d/%m/%Y") }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-hint">
+    <strong style="display:block; color: var(--color-brand-dark); font-family: var(--font-display); font-size: 1.2rem;">Nenhuma solicitação recebida ainda</strong>
+    Assim que alguém preencher o formulário público de ajuda, os pedidos aparecerão aqui.
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_name }} — Conectando quem doa a quem precisa{% endblock %}</title>
+    <meta name="description" content="Rede Solidária conecta pessoas que precisam de ajuda a instituições e pontos de doação, mostrando tudo em um mapa colaborativo.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="/" class="brand">
+                <svg class="brand__mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="10" cy="10" r="4" fill="currentColor"/>
+                    <circle cx="30" cy="9" r="3.2" fill="currentColor"/>
+                    <circle cx="8" cy="30" r="3.2" fill="currentColor"/>
+                    <circle cx="27" cy="29" r="4.4" fill="currentColor"/>
+                    <circle cx="20" cy="19" r="3" fill="currentColor"/>
+                    <path d="M10 10L20 19M30 9L20 19M8 30L20 19M27 29L20 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+                <span>Rede Solidária</span>
+            </a>
+
+            <nav class="main-nav" aria-label="Navegação principal">
+                <ul class="main-nav__links" data-nav-links>
+                    <li><a href="/#como-funciona">Como funciona</a></li>
+                    <li><a href="/#tipos-de-ajuda">Tipos de ajuda</a></li>
+                    <li><a href="/#pontos-de-doacao">Pontos de doação</a></li>
+                    <li><a href="/#impacto">Sobre o projeto</a></li>
+                    <li class="main-nav__cta"><a href="/ajuda/solicitar" class="btn btn--secondary">Encontrar ajuda</a></li>
+                </ul>
+                <a href="/mapa" class="btn btn--primary main-nav__cta">Ver mapa</a>
+                <button class="nav-toggle" data-nav-toggle aria-label="Abrir menu" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">
+                        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="10" cy="10" r="4" fill="currentColor"/>
+                            <circle cx="30" cy="9" r="3.2" fill="currentColor"/>
+                            <circle cx="8" cy="30" r="3.2" fill="currentColor"/>
+                            <circle cx="27" cy="29" r="4.4" fill="currentColor"/>
+                            <circle cx="20" cy="19" r="3" fill="currentColor"/>
+                            <path d="M10 10L20 19M30 9L20 19M8 30L20 19M27 29L20 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                        </svg>
+                        <span>Rede Solidária</span>
+                    </div>
+                    <p>Uma plataforma para aproximar quem quer ajudar de quem precisa de ajuda, com transparência e respeito.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="/#como-funciona">Como funciona</a></li>
+                        <li><a href="/#tipos-de-ajuda">Tipos de ajuda</a></li>
+                        <li><a href="/mapa">Mapa de pontos</a></li>
+                        <li><a href="/estatisticas">Estatísticas</a></li>
+                        <li><a href="/feedback">Deixar feedback</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Participe</h4>
+                    <ul>
+                        <li><a href="/ajuda/solicitar">Encontrar ajuda</a></li>
+                        <li><a href="/#pontos-de-doacao">Quero doar</a></li>
+                        <li><a href="/instituicoes/sugerir">Sugerir instituição</a></li>
+                        <li><a href="/admin/login">Acesso administrativo</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li>contato@redesolidaria.org.br</li>
+                        <li>Projeto escolar independente</li>
+                    </ul>
+                    <div class="footer-socials">
+                        <a href="#" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+                        </a>
+                        <a href="#" aria-label="E-mail">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; 2026 Rede Solidária. Projeto escolar sem fins lucrativos.</span>
+                <span>Feito para aproximar pessoas.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', path='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

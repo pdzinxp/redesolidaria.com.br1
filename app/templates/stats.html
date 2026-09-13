@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Estatísticas — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div>
+            <div class="breadcrumb"><a href="/">Início</a> / Estatísticas</div>
+            <h1>Estatísticas da Rede Solidária</h1>
+            <p>Números atualizados automaticamente a partir do banco de dados.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="stats-grid" style="margin-bottom: var(--space-lg);">
+            <div class="stat" style="border-left-color: var(--color-line);">
+                <div class="stat__number" style="color: var(--color-brand);">{{ stats.institutions }}</div>
+                <div class="stat__label" style="color: var(--color-ink-soft);">Instituições cadastradas</div>
+            </div>
+            <div class="stat" style="border-left-color: var(--color-line);">
+                <div class="stat__number" style="color: var(--color-brand);">{{ stats.donation_points }}</div>
+                <div class="stat__label" style="color: var(--color-ink-soft);">Pontos de doação ativos</div>
+            </div>
+            <div class="stat" style="border-left-color: var(--color-line);">
+                <div class="stat__number" style="color: var(--color-brand);">{{ stats.help_requests }}</div>
+                <div class="stat__label" style="color: var(--color-ink-soft);">Solicitações de ajuda</div>
+            </div>
+            <div class="stat" style="border-left-color: var(--color-line);">
+                <div class="stat__number" style="color: var(--color-brand);">{{ total_categories }}</div>
+                <div class="stat__label" style="color: var(--color-ink-soft);">Categorias de doação</div>
+            </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom: var(--space-2xl);">
+            <div class="stat" style="border-left-color: var(--color-line);">
+                <div class="stat__number" style="color: var(--color-accent-dark);">{{ site_settings.people_helped }}</div>
+                <div class="stat__label" style="color: var(--color-ink-soft);">Pessoas ajudadas</div>
+            </div>
+            <div class="stat" style="border-left-color: var(--color-line);">
+                <div class="stat__number" style="color: var(--color-accent-dark);">{{ site_settings.site_visits }}</div>
+                <div class="stat__label" style="color: var(--color-ink-soft);">Visitas ao site</div>
+            </div>
+            <div class="stat" style="border-left-color: var(--color-line);">
+                <div class="stat__number" style="color: var(--color-accent-dark);">{{ feedback_average }}<span style="font-size: 1.2rem;">/5</span></div>
+                <div class="stat__label" style="color: var(--color-ink-soft);">Nota média ({{ feedback_count }} avaliações)</div>
+            </div>
+        </div>
+
+        <div class="stats-charts">
+            <div>
+                <h3 style="margin-bottom: 1rem;">Instituições por cidade</h3>
+                {% if institutions_per_city %}
+                <div class="bar-chart">
+                    {% for city, count in institutions_per_city %}
+                    <div class="bar-chart__row">
+                        <span class="bar-chart__label">{{ city }}</span>
+                        <div class="bar-chart__track">
+                            <div class="bar-chart__fill" style="width: {{ (count / max_per_city * 100)|round(1) }}%;"></div>
+                        </div>
+                        <span class="bar-chart__value">{{ count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>Ainda não há instituições cadastradas para gerar este gráfico.</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <h3 style="margin-bottom: 1rem;">Tipos de doação mais necessários</h3>
+                {% if most_needed %}
+                <div class="bar-chart">
+                    {% for type_name, count in most_needed %}
+                    <div class="bar-chart__row">
+                        <span class="bar-chart__label">{{ type_name }}</span>
+                        <div class="bar-chart__track">
+                            <div class="bar-chart__fill bar-chart__fill--accent" style="width: {{ (count / max_needed * 100)|round(1) }}%;"></div>
+                        </div>
+                        <span class="bar-chart__value">{{ count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>Ainda não há solicitações de ajuda registradas para gerar este gráfico.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--color-line);">
+            <div class="section-header--with-action" style="display:flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-lg);">
+                <div>
+                    <h3>O que estão dizendo</h3>
+                </div>
+                <a href="/feedback" class="btn btn--secondary">Deixar meu feedback</a>
+            </div>
+
+            {% if recent_feedbacks %}
+            <div class="institution-grid">
+                {% for f in recent_feedbacks %}
+                <div class="sidebar-card">
+                    <div style="color: var(--color-accent); letter-spacing: 2px; margin-bottom: .4rem;">
+                        {% for i in range(5) %}{% if i < f.rating %}★{% else %}<span style="color: var(--color-line);">★</span>{% endif %}{% endfor %}
+                    </div>
+                    {% if f.comment %}<p style="font-size: .92rem; margin-bottom: .5rem;">{{ f.comment }}</p>{% endif %}
+                    <span style="font-size: .82rem; color: var(--color-ink-soft);">— {{ f.reviewer_name or "Anônimo" }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>Ainda não há avaliações. <a href="/feedback" style="color: var(--color-brand); font-weight: 600;">Seja o primeiro a avaliar!</a></p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

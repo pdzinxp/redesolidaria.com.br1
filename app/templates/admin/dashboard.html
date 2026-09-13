@@ -1,0 +1,64 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_page_title %}Dashboard{% endblock %}
+{% block admin_title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+<div class="admin-stat-cards">
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ stats.institutions }}</div>
+        <div class="admin-stat-card__label">Instituições cadastradas</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ stats.donation_points }}</div>
+        <div class="admin-stat-card__label">Pontos de doação ativos</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ pending_requests }}</div>
+        <div class="admin-stat-card__label">Solicitações de ajuda</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ pending_suggestions }}</div>
+        <div class="admin-stat-card__label">Sugestões pendentes</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ feedback_average }}</div>
+        <div class="admin-stat-card__label">Nota média ({{ feedback_count }} avaliações)</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__number">{{ site_settings.people_helped }}</div>
+        <div class="admin-stat-card__label">Pessoas ajudadas (manual)</div>
+    </div>
+</div>
+
+<h3 style="margin-bottom: 1rem;">Atalhos</h3>
+<div class="admin-quick-links">
+    <a href="/admin/sugestoes" class="admin-quick-link">
+        <h3>Revisar sugestões {% if pending_suggestions > 0 %}({{ pending_suggestions }}){% endif %}</h3>
+        <p>Instituições sugeridas por visitantes, aguardando revisão.</p>
+    </a>
+    <a href="/admin/instituicoes/nova" class="admin-quick-link">
+        <h3>+ Cadastrar instituição</h3>
+        <p>Adicione um novo ponto de doação ou instituição parceira.</p>
+    </a>
+    <a href="/admin/instituicoes" class="admin-quick-link">
+        <h3>Gerenciar instituições</h3>
+        <p>Edite dados, fotos e ative ou desative instituições existentes.</p>
+    </a>
+    <a href="/admin/solicitacoes" class="admin-quick-link">
+        <h3>Ver solicitações de ajuda</h3>
+        <p>Consulte os pedidos enviados pelo formulário público.</p>
+    </a>
+    <a href="/admin/feedbacks" class="admin-quick-link">
+        <h3>Ver feedbacks</h3>
+        <p>Avaliações e comentários deixados por visitantes do site.</p>
+    </a>
+    <a href="/admin/configuracoes" class="admin-quick-link">
+        <h3>Configurações</h3>
+        <p>Números de impacto exibidos no site e sua conta de acesso.</p>
+    </a>
+    <a href="/estatisticas" class="admin-quick-link" target="_blank" rel="noopener">
+        <h3>Estatísticas públicas ↗</h3>
+        <p>Veja como esses números aparecem para o público.</p>
+    </a>
+</div>
+{% endblock %}

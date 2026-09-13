@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Mapa de pontos de doação — {{ site_name }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='vendor/leaflet/leaflet.css') }}"/>
+<style>
+    #map { width: 100%; height: 100%; border-radius: var(--radius-md); }
+    .map-page-wrap { display: grid; grid-template-columns: 320px 1fr; gap: var(--space-md); height: 620px; }
+    .map-sidebar { overflow-y: auto; padding-right: .3rem; }
+    .map-search { padding: .7rem .9rem; border: 1px solid var(--color-line); border-radius: var(--radius-sm); width: 100%; margin-bottom: 1rem; font-family: var(--font-body); }
+    .map-list-item { padding: .8rem; border: 1px solid var(--color-line); border-radius: var(--radius-sm); margin-bottom: .6rem; cursor: pointer; background-color: var(--color-white); transition: border-color .15s ease; }
+    .map-list-item:hover, .map-list-item.is-active { border-color: var(--color-brand); }
+    .map-list-item h4 { font-family: var(--font-display); font-size: 1rem; color: var(--color-brand-dark); margin-bottom: .2rem; }
+    .map-list-item p { font-size: .85rem; margin: 0; }
+    .map-popup img { width: 100%; height: 90px; object-fit: cover; border-radius: 6px; margin-bottom: .4rem; }
+    .map-popup h4 { margin: 0 0 .3rem; font-family: var(--font-display); }
+    .map-popup p { margin: 0 0 .2rem; font-size: .85rem; }
+    .map-empty { padding: 1rem; text-align: center; color: var(--color-ink-soft); font-size: .9rem; }
+    @media (max-width: 860px) {
+        .map-page-wrap { grid-template-columns: 1fr; height: auto; }
+        #map { height: 400px; }
+        .map-sidebar { max-height: 300px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div>
+            <div class="breadcrumb"><a href="/">Início</a> / Mapa</div>
+            <h1>Mapa de pontos de doação</h1>
+            <p>Encontre instituições próximas de você. Clique em um marcador ou na lista para ver detalhes.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="map-page-wrap">
+            <div class="map-sidebar">
+                <input type="text" id="map-search" class="map-search" placeholder="Buscar por nome ou cidade...">
+                <div id="map-list"></div>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', path='vendor/leaflet/leaflet.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+    const map = L.map("map").setView([-14.235, -51.9253], 4); // centro do Brasil
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19,
+    }).addTo(map);
+
+    const listEl = document.getElementById("map-list");
+    const searchEl = document.getElementById("map-search");
+    let institutions = [];
+    let markers = [];
+
+    function renderPopup(item) {
+        const photo = item.image_url ? `<img src="${item.image_url}" alt="${item.name}">` : "";
+        const donationTypes = item.donation_types.length ? item.donation_types.join(", ") : "Não informado";
+        return `
+            <div class="map-popup">
+                ${photo}
+                <h4>${item.name}</h4>
+                <p>${item.address}, ${item.city}/${item.state}</p>
+                <p>${item.phone || "Telefone não informado"}</p>
+                <p><strong>Aceita:</strong> ${donationTypes}</p>
+                <a href="${item.detail_url}" class="btn btn--primary btn--tiny" style="width:auto; display:inline-flex; margin-top:.4rem;">Ver detalhes</a>
+            </div>
+        `;
+    }
+
+    function renderList(items) {
+        listEl.innerHTML = "";
+        if (items.length === 0) {
+            listEl.innerHTML = '<div class="map-empty">Nenhum ponto encontrado com esse termo.</div>';
+            return;
+        }
+        items.forEach(function (item, index) {
+            const el = document.createElement("div");
+            el.className = "map-list-item";
+            el.innerHTML = `<h4>${item.name}</h4><p>${item.city}/${item.state}</p>`;
+            el.addEventListener("click", function () {
+                map.setView([item.latitude, item.longitude], 15);
+                markers[index].openPopup();
+            });
+            listEl.appendChild(el);
+        });
+    }
+
+    function drawMarkers(items) {
+        markers.forEach(function (m) { map.removeLayer(m); });
+        markers = items.map(function (item) {
+            const marker = L.marker([item.latitude, item.longitude]).addTo(map);
+            marker.bindPopup(renderPopup(item));
+            return marker;
+        });
+        renderList(items);
+    }
+
+    try {
+        const response = await fetch("/mapa/dados");
+        institutions = await response.json();
+    } catch (error) {
+        listEl.innerHTML = '<div class="map-empty">Não foi possível carregar os pontos de doação.</div>';
+        return;
+    }
+
+    if (institutions.length === 0) {
+        listEl.innerHTML = '<div class="map-empty">Nenhuma instituição cadastrada ainda. Assim que houver pontos ativos, eles aparecerão aqui.</div>';
+    } else {
+        drawMarkers(institutions);
+        const group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.2));
+    }
+
+    searchEl.addEventListener("input", function () {
+        const term = searchEl.value.trim().toLowerCase();
+        const filtered = institutions.filter(function (item) {
+            return item.name.toLowerCase().includes(term) || item.city.toLowerCase().includes(term);
+        });
+        drawMarkers(filtered);
+    });
+});
+</script>
+{% endblock %}

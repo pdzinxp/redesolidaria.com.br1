@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Deixe seu feedback — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div>
+            <div class="breadcrumb"><a href="/">Início</a> / Feedback</div>
+            <h1>O que você achou da Rede Solidária?</h1>
+            <p>Sua opinião ajuda a melhorar a plataforma para quem doa e para quem precisa de ajuda.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); align-items: start;">
+        <div class="form-card">
+            {% if enviado %}
+            <div class="form-errors" style="background-color: var(--color-brand-light); border-color: var(--color-brand); color: var(--color-brand-dark);">
+                <p>Obrigado pela sua avaliação!</p>
+                <p style="font-weight: 400; margin-top: .4rem;">Seu feedback foi registrado e ajuda a Rede Solidária a melhorar.</p>
+            </div>
+            {% endif %}
+
+            {% if errors %}
+            <div class="form-errors">
+                <p>Corrija os itens abaixo antes de continuar:</p>
+                <ul>
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post" action="/feedback">
+                <div class="field">
+                    <label>Sua avaliação *</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 estrelas">★</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 estrelas">★</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 estrelas">★</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 estrelas">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" required><label for="star1" title="1 estrela">★</label>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reviewer_name">Seu nome (opcional)</label>
+                    <input type="text" id="reviewer_name" name="reviewer_name" placeholder="Como quer ser identificado, ou deixe em branco para ficar anônimo">
+                </div>
+
+                <div class="field">
+                    <label for="comment">Comentário (opcional)</label>
+                    <textarea id="comment" name="comment" placeholder="Conte um pouco sobre sua experiência com o site..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary">Enviar avaliação</button>
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <div class="sidebar-card" style="margin-bottom: var(--space-md);">
+                <span class="eyebrow">Nota média</span>
+                <div style="display:flex; align-items:baseline; gap:.6rem;">
+                    <span style="font-family: var(--font-display); font-size: 2.4rem; color: var(--color-brand);">{{ average }}</span>
+                    <span style="color: var(--color-ink-soft); font-size: .9rem;">de 5 · {{ total }} avaliaç{{ 'ão' if total == 1 else 'ões' }}</span>
+                </div>
+            </div>
+
+            {% if recent %}
+            <h3 style="margin-bottom: 1rem;">O que estão dizendo</h3>
+            {% for f in recent %}
+            <div class="sidebar-card" style="margin-bottom: .8rem;">
+                <div style="color: var(--color-accent); letter-spacing: 2px; margin-bottom: .3rem;">
+                    {% for i in range(5) %}{% if i < f.rating %}★{% else %}<span style="color: var(--color-line);">★</span>{% endif %}{% endfor %}
+                </div>
+                {% if f.comment %}<p style="font-size: .92rem; margin-bottom: .4rem;">{{ f.comment }}</p>{% endif %}
+                <span style="font-size: .82rem; color: var(--color-ink-soft);">— {{ f.reviewer_name or "Anônimo" }}</span>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login administrativo — {{ site_name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/admin.css') }}">
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <div class="brand" style="justify-content: center; margin-bottom: 1.5rem;">
+            <svg class="brand__mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="10" cy="10" r="4" fill="currentColor"/>
+                <circle cx="30" cy="9" r="3.2" fill="currentColor"/>
+                <circle cx="8" cy="30" r="3.2" fill="currentColor"/>
+                <circle cx="27" cy="29" r="4.4" fill="currentColor"/>
+                <circle cx="20" cy="19" r="3" fill="currentColor"/>
+                <path d="M10 10L20 19M30 9L20 19M8 30L20 19M27 29L20 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <span>Rede Solidária</span>
+        </div>
+        <h1 style="font-size: 1.5rem; text-align: center; margin-bottom: .3rem;">Acesso administrativo</h1>
+        <p style="text-align: center; margin-bottom: 1.5rem;">Entre com sua conta para gerenciar instituições e solicitações.</p>
+
+        {% if erro %}
+        <div class="form-errors"><p>{{ erro }}</p></div>
+        {% endif %}
+
+        <form method="post" action="/admin/login">
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="field">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            <div class="field">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn--primary" style="width: 100%; justify-content: center;">Entrar</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 1.5rem; font-size: .85rem;">
+            <a href="/" style="color: var(--color-brand); font-weight: 500;">&larr; Voltar para o site</a>
+        </p>
+    </div>
+</body>
+</html>

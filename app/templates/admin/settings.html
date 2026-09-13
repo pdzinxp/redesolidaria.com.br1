@@ -1,0 +1,79 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_page_title %}Configurações{% endblock %}
+{% block admin_title %}Configurações{% endblock %}
+
+{% block admin_content %}
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); align-items: start;">
+
+    <div class="form-card">
+        <h3 style="margin-bottom: .3rem;">Números de impacto</h3>
+        <p style="margin-bottom: 1.2rem; font-size: .9rem;">
+            Exibidos na página inicial e nas estatísticas públicas. Como o projeto ainda não
+            possui um sistema automático de contagem, esses números são inseridos manualmente.
+        </p>
+
+        {% if sucesso_metricas %}
+        <div class="form-errors" style="background-color: var(--color-brand-light); border-color: var(--color-brand); color: var(--color-brand-dark);">
+            <p>Números atualizados com sucesso.</p>
+        </div>
+        {% endif %}
+
+        <form method="post" action="/admin/configuracoes/metricas">
+            <div class="field">
+                <label for="people_helped">Pessoas ajudadas</label>
+                <input type="number" id="people_helped" name="people_helped" min="0" value="{{ site_settings.people_helped }}">
+            </div>
+            <div class="field">
+                <label for="site_visits">Visitas ao site</label>
+                <input type="number" id="site_visits" name="site_visits" min="0" value="{{ site_settings.site_visits }}">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary">Salvar números</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-card">
+        <h3 style="margin-bottom: .3rem;">Login e senha</h3>
+        <p style="margin-bottom: 1.2rem; font-size: .9rem;">
+            Para sua segurança, confirme a senha atual para alterar o usuário ou a senha.
+        </p>
+
+        {% if sucesso_conta %}
+        <div class="form-errors" style="background-color: var(--color-brand-light); border-color: var(--color-brand); color: var(--color-brand-dark);">
+            <p>Credenciais atualizadas com sucesso.</p>
+        </div>
+        {% endif %}
+
+        {% if erro_conta %}
+        <div class="form-errors">
+            <p>Não foi possível atualizar:</p>
+            <ul>
+                {% for msg in erro_conta.split(" | ") %}
+                <li>{{ msg }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form method="post" action="/admin/configuracoes/conta">
+            <div class="field">
+                <label for="new_username">Nome de usuário</label>
+                <input type="text" id="new_username" name="new_username" required value="{{ admin.username }}">
+            </div>
+            <div class="field">
+                <label for="new_password">Nova senha</label>
+                <input type="password" id="new_password" name="new_password" placeholder="Deixe em branco para manter a senha atual">
+                <span class="field__hint">Mínimo de 6 caracteres, se preenchida.</span>
+            </div>
+            <div class="field">
+                <label for="current_password">Senha atual *</label>
+                <input type="password" id="current_password" name="current_password" required placeholder="Confirme sua senha atual para salvar">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary">Salvar credenciais</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

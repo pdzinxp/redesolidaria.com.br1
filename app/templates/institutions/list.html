@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Instituições — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div>
+            <div class="breadcrumb"><a href="/">Início</a> / Instituições</div>
+            <h1>Instituições cadastradas</h1>
+            <p>Todos os pontos de doação e assistência social cadastrados na Rede Solidária.</p>
+        </div>
+        <a href="/instituicoes/sugerir" class="btn btn--primary">Sugerir instituição</a>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <form method="get" action="/instituicoes" class="search-bar">
+            <input type="text" name="q" placeholder="Buscar por nome..." value="{{ filters.q }}">
+
+            <select name="city">
+                <option value="">Todas as cidades</option>
+                {% for c in all_cities %}
+                <option value="{{ c }}" {% if filters.city == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="donation_type_id">
+                <option value="">Todos os tipos de doação</option>
+                {% for dt in donation_types %}
+                <option value="{{ dt.id }}" {% if filters.donation_type_id == dt.id %}selected{% endif %}>{{ dt.name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn btn--primary">Filtrar</button>
+            {% if filters.q or filters.city or filters.donation_type_id %}
+            <a href="/instituicoes" class="btn btn--secondary">Limpar</a>
+            {% endif %}
+        </form>
+
+        {% if institutions %}
+        <div class="institution-grid">
+            {% for institution in institutions %}
+            <article class="institution-card">
+                <div class="institution-card__photo">
+                    {% if institution.main_image %}
+                    <img src="/{{ institution.main_image.file_path }}" alt="Foto de {{ institution.name }}">
+                    {% endif %}
+                </div>
+                <div class="institution-card__body">
+                    <span class="institution-card__city">{{ institution.city }}/{{ institution.state }}</span>
+                    <h3>{{ institution.name }}</h3>
+                    <p>{{ (institution.description or "Sem descrição cadastrada.")[:110] }}{% if institution.description and institution.description|length > 110 %}…{% endif %}</p>
+                </div>
+                <div class="institution-card__footer">
+                    <span></span>
+                    <a href="/instituicoes/{{ institution.id }}" class="btn btn--secondary">Ver detalhes</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-hint">
+            <strong style="display:block; color: var(--color-brand-dark); font-family: var(--font-display); font-size: 1.2rem; margin-bottom: .4rem;">Nenhuma instituição encontrada</strong>
+            {% if filters.q or filters.city or filters.donation_type_id %}
+            Tente ajustar os filtros de busca.
+            {% else %}
+            Assim que instituições forem cadastradas, elas aparecerão aqui.
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
