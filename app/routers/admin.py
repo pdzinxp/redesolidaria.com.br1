@@ -88,7 +88,7 @@ def _values_from_submitted_form(name, description, address, city, state, zip_cod
 @router.get("")
 def dashboard(request: Request, db: Session = Depends(get_db), admin: User = Depends(get_current_admin)):
     stats = institution_service.get_public_stats(db)
-    pending_requests = help_request_service.count_help_requests(db)
+    pending_requests = help_request_service.count_help_requests(db, status="pendente")
     pending_suggestions = institution_suggestion_service.count_pending_suggestions(db)
     feedback_count = feedback_service.count_feedbacks(db)
     feedback_average = feedback_service.get_average_rating(db)
@@ -423,8 +423,12 @@ def list_help_requests(
     db: Session = Depends(get_db),
     admin: User = Depends(get_current_admin),
     ordenar: str = "recentes",
+    status: str = "pendente",
 ):
-    help_requests = help_request_service.list_help_requests(db, order_by_score=(ordenar == "organizacao"))
+    status_filter = status if status in {"pendente", "atendida"} else None
+    help_requests = help_request_service.list_help_requests(
+        db, order_by_score=(ordenar == "organizacao"), status=status_filter
+    )
     return templates.TemplateResponse(
         "admin/help_requests_list.html",
         {
@@ -433,8 +437,27 @@ def list_help_requests(
             "active": "solicitacoes",
             "help_requests": help_requests,
             "ordenar": ordenar,
+            "status_filter": status,
         },
     )
+
+
+@router.post("/solicitacoes/{help_request_id}/atender")
+def mark_help_request_attended(
+    help_request_id: int, db: Session = Depends(get_db), admin: User = Depends(get_current_admin)
+):
+    help_request = help_request_service.get_help_request_or_404(db, help_request_id)
+    help_request_service.mark_as_attended(db, help_request)
+    return RedirectResponse(url="/admin/solicitacoes", status_code=303)
+
+
+@router.post("/solicitacoes/{help_request_id}/reabrir")
+def reopen_help_request(
+    help_request_id: int, db: Session = Depends(get_db), admin: User = Depends(get_current_admin)
+):
+    help_request = help_request_service.get_help_request_or_404(db, help_request_id)
+    help_request_service.mark_as_pending(db, help_request)
+    return RedirectResponse(url="/admin/solicitacoes?status=pendente", status_code=303)
 
 
 # ============================================================

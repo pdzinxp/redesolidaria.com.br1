@@ -13,9 +13,11 @@ sempre feita por uma pessoa responsável.
 
 from typing import List, Optional
 
+from fastapi import HTTPException
 from sqlalchemy.orm import Session, joinedload
 
 from app.models import HelpRequest
+from app.models.help_request import STATUS_ATENDIDA, STATUS_PENDENTE
 from app.schemas.help_request import HelpRequestIn
 
 
@@ -65,8 +67,12 @@ def create_help_request(db: Session, data: HelpRequestIn) -> HelpRequest:
     return help_request
 
 
-def list_help_requests(db: Session, order_by_score: bool = False) -> List[HelpRequest]:
+def list_help_requests(
+    db: Session, order_by_score: bool = False, status: Optional[str] = None
+) -> List[HelpRequest]:
     query = db.query(HelpRequest).options(joinedload(HelpRequest.help_type))
+    if status:
+        query = query.filter(HelpRequest.status == status)
     if order_by_score:
         query = query.order_by(HelpRequest.organization_score.desc(), HelpRequest.created_at.desc())
     else:
@@ -74,5 +80,25 @@ def list_help_requests(db: Session, order_by_score: bool = False) -> List[HelpRe
     return query.all()
 
 
-def count_help_requests(db: Session) -> int:
-    return db.query(HelpRequest).count()
+def count_help_requests(db: Session, status: Optional[str] = None) -> int:
+    query = db.query(HelpRequest)
+    if status:
+        query = query.filter(HelpRequest.status == status)
+    return query.count()
+
+
+def get_help_request_or_404(db: Session, help_request_id: int) -> HelpRequest:
+    help_request = db.query(HelpRequest).filter(HelpRequest.id == help_request_id).first()
+    if help_request is None:
+        raise HTTPException(status_code=404, detail="Solicitação não encontrada.")
+    return help_request
+
+
+def mark_as_attended(db: Session, help_request: HelpRequest) -> None:
+    help_request.status = STATUS_ATENDIDA
+    db.commit()
+
+
+def mark_as_pending(db: Session, help_request: HelpRequest) -> None:
+    help_request.status = STATUS_PENDENTE
+    db.commit()

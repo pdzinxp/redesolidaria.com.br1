@@ -30,6 +30,7 @@ from app.routers import (
     stats,
 )
 from app.services.auth_service import seed_default_admin
+from app.services.migration_service import run_lightweight_migrations
 from app.services.seed_service import seed_donation_types
 
 # Importa os models para que o SQLAlchemy "os conheça" antes de criar as
@@ -46,6 +47,10 @@ app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 # (Em um projeto maior usaríamos migrations com Alembic, mas para este
 # projeto escolar, criar as tabelas automaticamente é simples e suficiente.)
 Base.metadata.create_all(bind=engine)
+
+# Adiciona colunas novas a tabelas já existentes de execuções anteriores
+# (veja o comentário em app/services/migration_service.py).
+run_lightweight_migrations(engine)
 
 # Dados iniciais: categorias de doação padrão + administrador padrão.
 _db = SessionLocal()

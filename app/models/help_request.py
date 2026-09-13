@@ -21,6 +21,9 @@ from sqlalchemy.orm import relationship
 
 from app.database import Base
 
+STATUS_PENDENTE = "pendente"
+STATUS_ATENDIDA = "atendida"
+
 
 class HelpRequest(Base):
     __tablename__ = "help_requests"
@@ -41,11 +44,16 @@ class HelpRequest(Base):
     help_type_id = Column(Integer, ForeignKey("donation_types.id"), nullable=False)
 
     description = Column(Text, nullable=False)
-    contact = Column(String(150), nullable=False)  # telefone, e-mail, etc.
+    contact = Column(String(150), nullable=False)
 
     # Ferramenta de organização interna — NUNCA um julgamento de mérito.
     # Ver aviso ético no topo deste arquivo.
     organization_score = Column(Integer, default=0, nullable=False)
+
+    # Controle de acompanhamento: se a solicitação já foi atendida por
+    # alguma instituição ou ainda está em aberto. Isso é só um controle de
+    # fluxo de trabalho do admin — não afeta em nada a avaliação do caso.
+    status = Column(String(20), default=STATUS_PENDENTE, nullable=False)
 
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 

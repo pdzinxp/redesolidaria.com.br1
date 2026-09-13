@@ -152,6 +152,23 @@ rede-solidaria/
 - [x] Avaliação do site por estrelas (1 a 5) com comentário opcional, moderada pelo admin
 - [x] Números de impacto editáveis pelo admin ("pessoas ajudadas" e "visitas ao site")
 - [x] Troca de usuário e senha do administrador, protegida por confirmação da senha atual
+- [x] Marcar solicitações de ajuda como "atendida" (com opção de reabrir), separado da ordenação por organização
+
+## Sobre a migração leve do banco de dados
+
+Como o projeto foi crescendo ao longo do desenvolvimento, algumas tabelas
+ganharam colunas novas depois de já terem sido criadas (por exemplo, a
+coluna `status` em `help_requests`). Como o SQLAlchemy só cria tabelas que
+ainda não existem — ele não altera tabelas já criadas — isso poderia
+quebrar bancos de dados de execuções anteriores.
+
+Para evitar isso, `app/services/migration_service.py` verifica, a cada
+inicialização, se alguma coluna esperada está faltando em uma tabela já
+existente e a adiciona automaticamente com `ALTER TABLE`, sem apagar
+nenhum dado. Isso significa que, mesmo que você já tenha rodado versões
+anteriores deste projeto, **não precisa apagar o `rede_solidaria.db`** ao
+atualizar os arquivos — o sistema se ajusta sozinho na próxima
+inicialização.
 
 ## Sobre a separação entre público e administrativo
 

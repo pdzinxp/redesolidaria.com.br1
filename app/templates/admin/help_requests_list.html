@@ -10,10 +10,14 @@
 </div>
 
 <div class="admin-page-header">
-    <p>{{ help_requests|length }} solicitação(ões) recebida(s).</p>
     <div style="display: flex; gap: .5rem;">
-        <a href="/admin/solicitacoes?ordenar=recentes" class="btn {% if ordenar == 'recentes' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Mais recentes</a>
-        <a href="/admin/solicitacoes?ordenar=organizacao" class="btn {% if ordenar == 'organizacao' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Por organização</a>
+        <a href="/admin/solicitacoes?status=pendente&ordenar={{ ordenar }}" class="btn {% if status_filter == 'pendente' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Pendentes</a>
+        <a href="/admin/solicitacoes?status=atendida&ordenar={{ ordenar }}" class="btn {% if status_filter == 'atendida' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Atendidas</a>
+        <a href="/admin/solicitacoes?status=todas&ordenar={{ ordenar }}" class="btn {% if status_filter == 'todas' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Todas</a>
+    </div>
+    <div style="display: flex; gap: .5rem;">
+        <a href="/admin/solicitacoes?ordenar=recentes&status={{ status_filter }}" class="btn {% if ordenar == 'recentes' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Mais recentes</a>
+        <a href="/admin/solicitacoes?ordenar=organizacao&status={{ status_filter }}" class="btn {% if ordenar == 'organizacao' %}btn--primary{% else %}btn--secondary{% endif %} btn--tiny" style="width:auto;">Por organização</a>
     </div>
 </div>
 
@@ -28,6 +32,8 @@
                 <th>Contato</th>
                 <th>Situação descrita</th>
                 <th>Recebida em</th>
+                <th>Status</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -37,8 +43,26 @@
                 <td>{{ hr.city }}{% if hr.neighborhood %} — {{ hr.neighborhood }}{% endif %}</td>
                 <td>{{ hr.help_type.name }}</td>
                 <td>{{ hr.contact }}</td>
-                <td style="max-width: 320px;">{{ hr.description }}</td>
+                <td style="max-width: 280px;">{{ hr.description }}</td>
                 <td>{{ hr.created_at.strftime("%d/%m/%Y") }}</td>
+                <td>
+                    {% if hr.status == 'atendida' %}
+                    <span class="badge badge--active">Atendida</span>
+                    {% else %}
+                    <span class="badge badge--inactive">Pendente</span>
+                    {% endif %}
+                </td>
+                <td style="text-align:right; white-space: nowrap;">
+                    {% if hr.status == 'atendida' %}
+                    <form method="post" action="/admin/solicitacoes/{{ hr.id }}/reabrir" style="display:inline;">
+                        <button type="submit" class="btn btn--secondary btn--tiny" style="width:auto;">Reabrir</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="/admin/solicitacoes/{{ hr.id }}/atender" style="display:inline;">
+                        <button type="submit" class="btn btn--primary btn--tiny" style="width:auto;">Marcar como atendida</button>
+                    </form>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -46,8 +70,7 @@
 </div>
 {% else %}
 <div class="empty-hint">
-    <strong style="display:block; color: var(--color-brand-dark); font-family: var(--font-display); font-size: 1.2rem;">Nenhuma solicitação recebida ainda</strong>
-    Assim que alguém preencher o formulário público de ajuda, os pedidos aparecerão aqui.
+    <strong style="display:block; color: var(--color-brand-dark); font-family: var(--font-display); font-size: 1.2rem;">Nenhuma solicitação {% if status_filter == 'pendente' %}pendente{% elif status_filter == 'atendida' %}atendida{% endif %} no momento</strong>
 </div>
 {% endif %}
 {% endblock %}
