@@ -24,15 +24,25 @@ from pathlib import Path
 from uuid import uuid4
 
 from fastapi import HTTPException, UploadFile
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
 from sqlalchemy.orm import Session
 
 from app.config import BASE_DIR, INSTITUTIONS_UPLOADS_DIR
 from app.models import Institution, InstitutionImage
 
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
-MAX_FILE_SIZE_MB = 5
+
+# O Content-Type é apenas um sinal AUXILIAR — quem define esse cabeçalho é o
+# navegador/sistema operacional de quem está enviando o arquivo, e isso nem
+# sempre é confiável (por exemplo, alguns navegadores no Windows enviam
+# "application/octet-stream" para arquivos .webp, mesmo sendo um WebP
+# válido). Por isso só rejeitamos aqui quando o tipo é claramente algo que
+# NÃO é imagem (ex: "text/plain", "application/pdf"); tipos ausentes ou
+# genéricos passam para a validação de verdade, que é a extensão (allow-list)
+# e a abertura real dos bytes com Pillow, logo abaixo.
+GENERIC_CONTENT_TYPES = {"", "application/octet-stream", "binary/octet-stream"}
+
+MAX_FILE_SIZE_MB = 8
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 
 
@@ -50,7 +60,7 @@ def _generate_safe_filename(original_filename: str) -> str:
     evitando conflitos entre uploads e problemas de segurança relacionados
     a nomes de arquivo manipulados pelo usuário.
     """
-    extension = _get_extension(original_filename)
+    extension = _get_extension(original_filename or "")
     return f"{uuid4().hex}{extension}"
 
 
@@ -67,7 +77,8 @@ def _validate_and_read(upload_file: UploadFile) -> bytes:
             "Formato de arquivo não permitido. Envie uma imagem JPG, JPEG, PNG ou WebP."
         )
 
-    if upload_file.content_type not in ALLOWED_CONTENT_TYPES:
+    content_type = (upload_file.content_type or "").lower()
+    if content_type not in GENERIC_CONTENT_TYPES and not content_type.startswith("image/"):
         raise ImageValidationError(
             "O arquivo enviado não foi reconhecido como uma imagem válida."
         )
@@ -89,12 +100,22 @@ def _validate_and_read(upload_file: UploadFile) -> bytes:
 
     # Verificação real do conteúdo: tenta abrir os bytes como imagem.
     # Isso pega, por exemplo, um arquivo .txt renomeado para .jpg.
+    #
+    # Usamos "except Exception" de propósito aqui (e não só os dois tipos
+    # mais comuns de erro): esta função existe especificamente para separar
+    # "é uma imagem processável" de "não é" antes de qualquer outra parte do
+    # sistema tocar no arquivo, então qualquer falha do Pillow — incluindo
+    # fotos extremamente grandes, que disparam a proteção interna do Pillow
+    # contra "decompression bombs" (Image.DecompressionBombError) — deve
+    # virar uma mensagem clara para quem está enviando, em vez de um erro
+    # interno do servidor (HTTP 500).
     try:
         image = Image.open(BytesIO(contents))
         image.verify()
-    except (UnidentifiedImageError, OSError):
+    except Exception:
         raise ImageValidationError(
-            "O conteúdo do arquivo não corresponde a uma imagem válida."
+            "Não foi possível processar essa imagem — o arquivo pode estar corrompido "
+            "ou a resolução pode ser grande demais. Tente uma foto com resolução menor."
         )
 
     return contents

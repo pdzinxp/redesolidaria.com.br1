@@ -477,6 +477,67 @@ p {
 }
 
 /* ---------- 9. PONTOS DE DOAÇÃO ---------- */
+/* ---------- Carrossel (setas sobre o scroller de instituições) ---------- */
+.carousel {
+  position: relative;
+}
+
+.carousel__arrow {
+  position: absolute;
+  top: 80px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-line);
+  color: var(--color-brand-dark);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+
+.carousel__arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.carousel__arrow:hover:not(:disabled) {
+  border-color: var(--color-brand);
+  transform: translateY(-2px);
+}
+
+.carousel__arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.carousel__arrow--prev {
+  left: -18px;
+}
+
+.carousel__arrow--next {
+  right: -18px;
+}
+
+@media (max-width: 720px) {
+  .carousel__arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .carousel__arrow--prev {
+    left: -8px;
+  }
+
+  .carousel__arrow--next {
+    right: -8px;
+  }
+}
+
 .institutions-scroller {
   display: flex;
   gap: var(--space-md);
@@ -498,6 +559,15 @@ p {
 .institution-card__photo {
   height: 160px;
   background-color: var(--color-brand-light);
+  overflow: hidden;
+  position: relative;
+}
+
+.institution-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .institution-card__body {
@@ -1130,6 +1200,10 @@ p {
 @media (max-width: 900px) {
   .institution-detail {
     grid-template-columns: 1fr;
+  }
+
+  .institution-detail__photo {
+    height: 240px;
   }
 
   .form-grid {

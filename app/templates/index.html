@@ -157,21 +157,31 @@
         </div>
 
         {% if featured_institutions %}
-        <div class="institutions-scroller">
-            {% for institution in featured_institutions %}
-            <article class="institution-card">
-                <div class="institution-card__photo">
-                    {% if institution.main_image %}
-                    <img src="/{{ institution.main_image.file_path }}" alt="Foto de {{ institution.name }}">
-                    {% endif %}
-                </div>
-                <div class="institution-card__body">
-                    <span class="institution-card__city">{{ institution.city }}</span>
-                    <h3>{{ institution.name }}</h3>
-                    <p>{{ institution.description }}</p>
-                </div>
-            </article>
-            {% endfor %}
+        <div class="carousel">
+            <button type="button" class="carousel__arrow carousel__arrow--prev" data-carousel-prev aria-label="Ver instituições anteriores">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <div class="institutions-scroller" data-carousel-track>
+                {% for institution in featured_institutions %}
+                <article class="institution-card">
+                    <div class="institution-card__photo">
+                        {% if institution.main_image %}
+                        <img src="/{{ institution.main_image.file_path }}" alt="Foto de {{ institution.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="institution-card__body">
+                        <span class="institution-card__city">{{ institution.city }}</span>
+                        <h3>{{ institution.name }}</h3>
+                        <p>{{ institution.description or "Sem descrição cadastrada." }}</p>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="carousel__arrow carousel__arrow--next" data-carousel-next aria-label="Ver próximas instituições">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
         </div>
         {% else %}
         <div class="institutions-empty">

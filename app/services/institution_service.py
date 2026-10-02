@@ -23,15 +23,44 @@ def list_institutions(db: Session, only_active: bool = False) -> List[Institutio
     return query.order_by(Institution.created_at.desc()).all()
 
 
-def list_featured_institutions(db: Session, limit: int = 3) -> List[Institution]:
-    """Usado na página inicial: instituições ativas mais recentes."""
-    return (
+def list_featured_institutions(db: Session, limit: Optional[int] = None) -> List[Institution]:
+    """
+    Usado na home (seção "Pontos de doação em destaque"): instituições
+    ativas mais recentes. Sem limite, traz todas — o carrossel na home é
+    quem decide quantas mostrar de cada vez, com os cards rolando
+    horizontalmente.
+    """
+    query = (
         db.query(Institution)
         .filter(Institution.is_active.is_(True))
         .order_by(Institution.created_at.desc())
-        .limit(limit)
-        .all()
     )
+    if limit:
+        query = query.limit(limit)
+    return query.all()
+
+
+def get_distinct_cities(db: Session) -> List[str]:
+    """
+    Lista de cidades únicas para o filtro de busca.
+
+    Usamos Python (em vez de só `.distinct()` no SQL) de propósito: o
+    `DISTINCT` do banco compara os textos exatamente como estão salvos, então
+    "São Paulo", "são paulo" e " São Paulo " contam como três cidades
+    diferentes se foram digitadas de formas diferentes no cadastro. Aqui
+    agrupamos ignorando maiúsculas/minúsculas e espaços nas pontas, mantendo
+    a primeira grafia encontrada para exibição — sem alterar nada no banco.
+    """
+    raw_cities = [row[0] for row in db.query(Institution.city).all() if row[0] and row[0].strip()]
+
+    seen: dict = {}
+    for raw_city in raw_cities:
+        cleaned = raw_city.strip()
+        key = cleaned.lower()
+        if key not in seen:
+            seen[key] = cleaned
+
+    return sorted(seen.values(), key=lambda c: c.lower())
 
 
 def get_institution_or_404(db: Session, institution_id: int) -> Institution:

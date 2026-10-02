@@ -56,7 +56,7 @@ def list_institutions(
 
     institutions = query.order_by(Institution.created_at.desc()).all()
 
-    all_cities = [row[0] for row in db.query(Institution.city).distinct().order_by(Institution.city).all()]
+    all_cities = institution_service.get_distinct_cities(db)
     donation_types = institution_service.get_all_donation_types(db)
 
     return templates.TemplateResponse(

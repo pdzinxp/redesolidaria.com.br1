@@ -22,7 +22,7 @@ def home(request: Request, db: Session = Depends(get_db)):
     """
     stats = institution_service.get_public_stats(db)
     site_settings = site_settings_service.get_settings(db)
-    featured_institutions = institution_service.list_featured_institutions(db, limit=3)
+    featured_institutions = institution_service.list_featured_institutions(db)
 
     context = {
         "request": request,
