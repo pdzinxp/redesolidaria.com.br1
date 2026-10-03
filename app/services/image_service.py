@@ -42,8 +42,12 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 # e a abertura real dos bytes com Pillow, logo abaixo.
 GENERIC_CONTENT_TYPES = {"", "application/octet-stream", "binary/octet-stream"}
 
-MAX_FILE_SIZE_MB = 8
+MAX_FILE_SIZE_MB = 20
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+
+# Maior lado (largura OU altura) que uma imagem pode ter depois de salva.
+MAX_DIMENSION = 1600
+JPEG_WEBP_QUALITY = 85
 
 
 class ImageValidationError(Exception):
@@ -62,6 +66,34 @@ def _generate_safe_filename(original_filename: str) -> str:
     """
     extension = _get_extension(original_filename or "")
     return f"{uuid4().hex}{extension}"
+
+
+def _resize_if_needed(contents: bytes, extension: str) -> bytes:
+    """Redimensiona a imagem se o lado maior ultrapassar MAX_DIMENSION."""
+    image = Image.open(BytesIO(contents))
+    width, height = image.size
+
+    if max(width, height) <= MAX_DIMENSION:
+        return contents
+
+    image.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.Resampling.LANCZOS)
+    output = BytesIO()
+
+    if extension in (".jpg", ".jpeg"):
+        if image.mode in ("RGBA", "LA", "P"):
+            rgba = image.convert("RGBA")
+            background = Image.new("RGB", rgba.size, (255, 255, 255))
+            background.paste(rgba, mask=rgba.split()[-1])
+            image = background
+        else:
+            image = image.convert("RGB")
+        image.save(output, "JPEG", quality=JPEG_WEBP_QUALITY, optimize=True)
+    elif extension == ".webp":
+        image.save(output, "WEBP", quality=JPEG_WEBP_QUALITY, method=6)
+    else:
+        image.save(output, "PNG", optimize=True)
+
+    return output.getvalue()
 
 
 def _validate_and_read(upload_file: UploadFile) -> bytes:
@@ -117,6 +149,11 @@ def _validate_and_read(upload_file: UploadFile) -> bytes:
             "Não foi possível processar essa imagem — o arquivo pode estar corrompido "
             "ou a resolução pode ser grande demais. Tente uma foto com resolução menor."
         )
+
+    try:
+        contents = _resize_if_needed(contents, extension)
+    except Exception:
+        pass
 
     return contents
 

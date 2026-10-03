@@ -8,7 +8,7 @@ parâmetro `dependencies=` logo abaixo), em vez de repetida em cada rota.
 from typing import List, Optional
 from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
@@ -303,6 +303,21 @@ def update_institution(
 def delete_institution(institution_id: int, db: Session = Depends(get_db), admin: User = Depends(get_current_admin)):
     institution = institution_service.get_institution_or_404(db, institution_id)
     institution_service.delete_institution(db, institution)
+    return RedirectResponse(url="/admin/instituicoes", status_code=303)
+
+
+@router.post("/instituicoes/{institution_id}/mover/{direction}")
+def move_institution(
+    institution_id: int,
+    direction: str,
+    db: Session = Depends(get_db),
+    admin: User = Depends(get_current_admin),
+):
+    """Reordena a instituição (usado pelos botões ↑/↓ na listagem admin)."""
+    if direction not in ("up", "down"):
+        raise HTTPException(status_code=400, detail="Direção inválida.")
+    institution_service.get_institution_or_404(db, institution_id)  # 404 se não existir
+    institution_service.move_institution(db, institution_id, direction)
     return RedirectResponse(url="/admin/instituicoes", status_code=303)
 
 

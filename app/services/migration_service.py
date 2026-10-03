@@ -24,6 +24,11 @@ PENDING_COLUMNS = [
         "column": "status",
         "ddl": "ALTER TABLE help_requests ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'pendente'",
     },
+    {
+        "table": "institutions",
+        "column": "display_order",
+        "ddl": "ALTER TABLE institutions ADD COLUMN display_order INTEGER NOT NULL DEFAULT 0",
+    },
 ]
 
 

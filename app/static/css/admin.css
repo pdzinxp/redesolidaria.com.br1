@@ -213,16 +213,24 @@
   font-size: 0.9rem;
 }
 
-/* ---------- Tabela (usada na lista de solicitações) ---------- */
+/* ---------- Tabela (usada nas listas do admin) ---------- */
 .admin-table-wrapper {
   background-color: var(--color-white);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  /* Em telas estreitas a tabela fica mais larga que a tela — por isso
+     permitimos rolagem HORIZONTAL (arrastar com o dedo) em vez de cortar
+     o conteúdo. overflow-y fica "hidden" só pra manter os cantos
+     arredondados do wrapper, já que a tabela não deveria rolar na
+     vertical dentro dele. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-table {
   width: 100%;
+  min-width: 640px;
   border-collapse: collapse;
   font-size: 0.92rem;
 }
@@ -241,6 +249,29 @@
   padding: 0.8rem 1rem;
   border-top: 1px solid var(--color-line);
   vertical-align: top;
+}
+
+.move-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+  background-color: var(--color-white);
+  color: var(--color-brand-dark);
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.move-btn:hover:not(:disabled) {
+  border-color: var(--color-brand);
+  background-color: var(--color-brand-light);
+}
+
+.move-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
 }
 
 .admin-notice {

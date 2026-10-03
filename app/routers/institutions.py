@@ -54,7 +54,7 @@ def list_institutions(
     if donation_type_id_int:
         query = query.filter(Institution.donation_types.any(DonationType.id == donation_type_id_int))
 
-    institutions = query.order_by(Institution.created_at.desc()).all()
+    institutions = query.order_by(Institution.display_order.asc(), Institution.created_at.desc()).all()
 
     all_cities = institution_service.get_distinct_cities(db)
     donation_types = institution_service.get_all_donation_types(db)

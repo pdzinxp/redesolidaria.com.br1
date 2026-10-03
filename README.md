@@ -153,6 +153,9 @@ rede-solidaria/
 - [x] Números de impacto editáveis pelo admin ("pessoas ajudadas" e "visitas ao site")
 - [x] Troca de usuário e senha do administrador, protegida por confirmação da senha atual
 - [x] Marcar solicitações de ajuda como "atendida" (com opção de reabrir), separado da ordenação por organização
+- [x] Fotos de instituição redimensionadas automaticamente no upload (máx. 1600px no lado maior), mantendo proporção e boa qualidade
+- [x] Ordem de exibição das instituições nos cards controlada pelo admin (botões ↑ ↓ em `/admin/instituicoes`)
+- [x] Tabelas do painel administrativo com rolagem horizontal em telas pequenas
 
 ## Sobre a migração leve do banco de dados
 

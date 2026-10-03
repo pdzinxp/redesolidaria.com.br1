@@ -41,6 +41,13 @@ class Institution(Base):
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
+    # Ordem de exibição nos cards/carrossel, definida manualmente pelo admin
+    # (botões "mover para cima/baixo" no painel). Por padrão todas as
+    # instituições começam empatadas em 0, e nesse caso a ordenação cai de
+    # volta para "mais recente primeiro" (created_at) — ou seja, nada muda
+    # pra quem nunca usar os botões de reordenar.
+    display_order = Column(Integer, default=0, nullable=False)
+
     # ---------- Relacionamentos ----------
 
     # Uma instituição tem várias imagens (relação um-para-muitos).

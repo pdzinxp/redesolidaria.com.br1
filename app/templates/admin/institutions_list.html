@@ -9,10 +9,16 @@
 </div>
 
 {% if institutions %}
+<div class="admin-notice">
+    As setas ↑ ↓ controlam a ordem em que as instituições aparecem nos cards do site
+    (home e listagem pública). Em telas estreitas, arraste a tabela para o lado para
+    ver as ações.
+</div>
 <div class="admin-table-wrapper">
     <table class="admin-table">
         <thead>
             <tr>
+                <th>Ordem</th>
                 <th>Nome</th>
                 <th>Cidade</th>
                 <th>Status</th>
@@ -23,6 +29,14 @@
         <tbody>
             {% for institution in institutions %}
             <tr>
+                <td style="white-space: nowrap;">
+                    <form method="post" action="/admin/instituicoes/{{ institution.id }}/mover/up" style="display:inline;">
+                        <button type="submit" class="move-btn" aria-label="Mover para cima" {% if loop.first %}disabled{% endif %}>↑</button>
+                    </form>
+                    <form method="post" action="/admin/instituicoes/{{ institution.id }}/mover/down" style="display:inline;">
+                        <button type="submit" class="move-btn" aria-label="Mover para baixo" {% if loop.last %}disabled{% endif %}>↓</button>
+                    </form>
+                </td>
                 <td>{{ institution.name }}</td>
                 <td>{{ institution.city }}/{{ institution.state }}</td>
                 <td>
@@ -33,7 +47,7 @@
                     {% endif %}
                 </td>
                 <td>{{ institution.images|length }}</td>
-                <td style="text-align: right;">
+                <td style="text-align: right; white-space: nowrap;">
                     <a href="/instituicoes/{{ institution.id }}" class="btn btn--secondary btn--tiny" style="width: auto; display: inline-flex;" target="_blank">Ver</a>
                     <a href="/admin/instituicoes/{{ institution.id }}/editar" class="btn btn--secondary btn--tiny" style="width: auto; display: inline-flex;">Editar</a>
                 </td>

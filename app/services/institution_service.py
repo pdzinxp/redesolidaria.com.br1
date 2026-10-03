@@ -20,24 +20,65 @@ def list_institutions(db: Session, only_active: bool = False) -> List[Institutio
     query = db.query(Institution).options(joinedload(Institution.donation_types))
     if only_active:
         query = query.filter(Institution.is_active.is_(True))
-    return query.order_by(Institution.created_at.desc()).all()
+    return query.order_by(Institution.display_order.asc(), Institution.created_at.desc()).all()
 
 
 def list_featured_institutions(db: Session, limit: Optional[int] = None) -> List[Institution]:
     """
-    Usado na home (seção "Pontos de doação em destaque"): instituições
-    ativas mais recentes. Sem limite, traz todas — o carrossel na home é
-    quem decide quantas mostrar de cada vez, com os cards rolando
-    horizontalmente.
+    Usado na home (seção "Pontos de doação em destaque") e na listagem
+    pública. A ordem é controlada pelo admin (botões "mover para
+    cima/baixo" em /admin/instituicoes); enquanto ninguém usa esses
+    botões, todas as instituições ficam empatadas em display_order=0 e a
+    ordenação cai de volta para "mais recente primeiro" — ou seja, o
+    comportamento padrão não muda sozinho.
     """
     query = (
         db.query(Institution)
         .filter(Institution.is_active.is_(True))
-        .order_by(Institution.created_at.desc())
+        .order_by(Institution.display_order.asc(), Institution.created_at.desc())
     )
     if limit:
         query = query.limit(limit)
     return query.all()
+
+
+def move_institution(db: Session, institution_id: int, direction: str) -> None:
+    """
+    Move uma instituição uma posição para cima ou para baixo na ordem de
+    exibição pública (home e listagem).
+
+    Antes de mover, "normaliza" o display_order de TODAS as instituições
+    para 0, 1, 2, 3... seguindo a ordem atual — isso garante que exista
+    sempre uma ordem bem definida pra trocar, mesmo que todas ainda
+    estejam empatadas em 0 (caso de quem nunca reordenou nada ainda).
+    """
+    institutions = (
+        db.query(Institution)
+        .order_by(Institution.display_order.asc(), Institution.created_at.desc())
+        .all()
+    )
+    for index, institution in enumerate(institutions):
+        if institution.display_order != index:
+            institution.display_order = index
+
+    index = next((i for i, inst in enumerate(institutions) if inst.id == institution_id), None)
+    if index is None:
+        db.commit()  # salva a normalização mesmo se o id não for encontrado
+        return
+
+    if direction == "up" and index > 0:
+        swap_index = index - 1
+    elif direction == "down" and index < len(institutions) - 1:
+        swap_index = index + 1
+    else:
+        db.commit()
+        return
+
+    institutions[index].display_order, institutions[swap_index].display_order = (
+        institutions[swap_index].display_order,
+        institutions[index].display_order,
+    )
+    db.commit()
 
 
 def get_distinct_cities(db: Session) -> List[str]:
